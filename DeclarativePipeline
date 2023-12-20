@@ -1,0 +1,42 @@
+@Library('thej950Library')_
+pipeline{
+    agent any
+    stages{
+        stage("download code"){
+            steps{
+                script{
+                    cicd1.newGit("maven")
+                }
+            }
+        }
+        stage("build code"){
+            steps{
+                script{
+                    cicd1.newBuild()
+                }
+            }
+        }
+        stage("Continues Deploy  into QA servers"){
+             steps{
+                 script{
+                    cicd3.newDeploy("project2","vagrant","10.10.10.52","testproject2")
+                 }
+             }
+        }
+        stage("Testing"){
+            steps{
+                script{
+                    cicd1.newGit("FunctionalTesting")
+                    cicd.runSelenium("project2")
+                }
+            }
+        }
+        stage("continuos Deploy into production servers"){
+            steps{
+                script{
+                    cicd3.newDeploy("project2","vagrant","10.10.10.53","prodproject2")
+                }
+            }
+        }
+    }
+}

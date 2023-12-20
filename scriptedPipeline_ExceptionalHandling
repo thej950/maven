@@ -1,0 +1,47 @@
+@Library('thej950Library')_
+node('built-in'){
+    stage("Download Code"){
+        try{
+             cicd1.newGit("maven")
+        }
+        catch(Exception e1){
+             mail bcc: '', body: 'download failed from git', cc: '', from: '', replyTo: '', subject: 'CI failed ', to: 'thej.devops@gmail.com'
+        }
+    }
+    stage("Build code"){
+        try{
+            cicd1.newBuild()
+        }
+        catch(Exception e2){
+            mail bcc: '', body: 'download failed from git', cc: '', from: '', replyTo: '', subject: 'CI failed ', to: 'thej.devops@gmail.com'
+        }
+    }
+    stage("Continues Deploy  into QA servers"){
+        try{
+        cicd3.newDeploy("project_exceptionalHandling","vagrant","10.10.10.52","testnew1")
+        }
+        catch(Exception e3){
+            mail bcc: '', body: 'download failed from git', cc: '', from: '', replyTo: '', subject: 'CI failed ', to: 'thej.devops@gmail.com'
+        }
+    }
+    stage("Testing"){
+        try{
+        cicd1.newGit("FunctionalTesting")
+        cicd.runSelenium("project_exceptionalHandling")
+        }
+        catch(Exception e4){
+            mail bcc: '', body: 'download failed from git', cc: '', from: '', replyTo: '', subject: 'CI failed ', to: 'thej.devops@gmail.com'
+        }
+    }
+    stage("continuos Deploy into production servers"){
+        try{
+        cicd3.newDeploy("project_exceptionalHandling","vagrant","10.10.10.53","prodnew1")
+        }
+        catch(Exception e4){
+            mail bcc: '', body: 'download failed from git', cc: '', from: '', replyTo: '', subject: 'CI failed ', to: 'thej.devops@gmail.com'
+        }
+    }
+}
+
+
+
